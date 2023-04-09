@@ -188,7 +188,7 @@ void B_PLUS_TREE_LEAF_PAGE_TYPE::MoveFirstToEndOf(BPlusTreeLeafPage *recipient,
   IncreaseSize(-1);
   for (int i = 0; i < size - 1; i++) array_[i] = array_[i + 1];
   Page *page = buffer_pool_manager->FetchPage(GetParentPageId());
-  B_PLUS_TREE_INTERNAL_PAGE *parent = reinterpret_cast<B_PLUS_TREE_INTERNAL_PAGE *>(page->GetData());
+  auto *parent = reinterpret_cast<B_PLUS_TREE_INTERNAL_PAGE *>(page->GetData());
   parent->SetKeyAt(parent->ValueIndex(GetPageId()), array_[0].first);
   buffer_pool_manager->UnpinPage(GetParentPageId(), true);
 }
@@ -227,7 +227,7 @@ void B_PLUS_TREE_LEAF_PAGE_TYPE::CopyFirstFrom(const MappingType &item, BufferPo
   array_[0] = item;
   IncreaseSize(1);
   Page *page = buffer_pool_manager->FetchPage(GetParentPageId());
-  B_PLUS_TREE_INTERNAL_PAGE *parent_id = reinterpret_cast<B_PLUS_TREE_INTERNAL_PAGE *>(page->GetData());
+  auto *parent_id = reinterpret_cast<B_PLUS_TREE_INTERNAL_PAGE *>(page->GetData());
   int index = parent_id->ValueIndex(GetPageId());
   parent_id->SetKeyAt(index, array_[0].first);
   buffer_pool_manager->UnpinPage(GetParentPageId(), true);

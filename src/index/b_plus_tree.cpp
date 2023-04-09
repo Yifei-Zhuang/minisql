@@ -251,10 +251,9 @@ bool BPLUSTREE_TYPE::CoalesceOrRedistribute(N *node, Transaction *transaction) {
     int x = p->ValueIndex(node->GetPageId());
     p->SetKeyAt(x, node->KeyAt(0));
     buffer_pool_manager_->UnpinPage(parent->GetPageId(), true);
-    //////////////////////////////////////////////////////////////////////////////////
 
-    //不管咋样先确定一下父亲节点的key/////////////////////////////////////////////////////
-    if (node->GetSize() < node->GetMinSize())  //需要判断/////////////////////////////////////////////
+    //不管咋样先确定一下父亲节点的key
+    if (node->GetSize() < node->GetMinSize())  //需要判断
     {
       page_id_t parent_id = node->GetParentPageId();
       Page *parent = buffer_pool_manager_->FetchPage(parent_id);
@@ -268,11 +267,11 @@ bool BPLUSTREE_TYPE::CoalesceOrRedistribute(N *node, Transaction *transaction) {
         if (node->GetSize() + neighbor_page->GetSize() > node->GetMaxSize())
           Redistribute(neighbor_page, node, 0);
         else {
-          Deletion = Coalesce(&neighbor_page, &node, &parent_page, index, transaction);  //////////////
-          buffer_pool_manager_->DeletePage(neighbor->GetPageId());                       ///////////////////
+          Deletion = Coalesce(&neighbor_page, &node, &parent_page, index, transaction);
+          buffer_pool_manager_->DeletePage(neighbor->GetPageId());
         }
 
-        buffer_pool_manager_->UnpinPage(neighbor->GetPageId(), true);  //////////////////////////////////////////
+        buffer_pool_manager_->UnpinPage(neighbor->GetPageId(), true);
       } else if (index == parent_page->GetSize() - 1)                  //最后一个节点
       {
         page_id_t neighbor_id = parent_page->ValueAt(index - 1);
@@ -281,10 +280,10 @@ bool BPLUSTREE_TYPE::CoalesceOrRedistribute(N *node, Transaction *transaction) {
         if (node->GetSize() + neighbor_page->GetSize() > node->GetMaxSize())
           Redistribute(neighbor_page, node, 1);
         else {
-          Deletion = Coalesce(&neighbor_page, &node, &parent_page, index, transaction);  ////////////
-          buffer_pool_manager_->DeletePage(node->GetPageId());                           ///////////////////
+          Deletion = Coalesce(&neighbor_page, &node, &parent_page, index, transaction);
+          buffer_pool_manager_->DeletePage(node->GetPageId());
         }
-        buffer_pool_manager_->UnpinPage(neighbor->GetPageId(), true);  ////////////////////////////////////////
+        buffer_pool_manager_->UnpinPage(neighbor->GetPageId(), true);
 
       } else  //中间节点
       {
@@ -300,11 +299,11 @@ bool BPLUSTREE_TYPE::CoalesceOrRedistribute(N *node, Transaction *transaction) {
           Redistribute(neighbor_page2, node, 0);
 
         } else {
-          Deletion = Coalesce(&neighbor_page1, &node, &parent_page, index, transaction);  ///////////
-          buffer_pool_manager_->DeletePage(node->GetPageId());                            ///////////////////
+          Deletion = Coalesce(&neighbor_page1, &node, &parent_page, index, transaction);
+          buffer_pool_manager_->DeletePage(node->GetPageId());
         }
-        buffer_pool_manager_->UnpinPage(neighbor1->GetPageId(), true);  ///////////////////////////////////////
-        buffer_pool_manager_->UnpinPage(neighbor2->GetPageId(), true);  ///////////////////////////////////////
+        buffer_pool_manager_->UnpinPage(neighbor1->GetPageId(), true);
+        buffer_pool_manager_->UnpinPage(neighbor2->GetPageId(), true);
       }
       buffer_pool_manager_->UnpinPage(parent->GetPageId(), true);
     }
@@ -329,7 +328,7 @@ template <typename N>
 bool BPLUSTREE_TYPE::Coalesce(N **neighbor_node, N **node,
                               BPlusTreeInternalPage<KeyType, page_id_t, KeyComparator> **parent, int index,
                               Transaction *transaction) {
-  if ((*node)->IsLeafPage()) {  ////////////////////////////////////////////////////////////
+  if ((*node)->IsLeafPage()) {
     LeafPage *leaf_node = reinterpret_cast<LeafPage *>(*node);
     LeafPage *leaf_neighbor = reinterpret_cast<LeafPage *>(*neighbor_node);
     if (index == 0 || (*parent)->ValueIndex((*node)->GetPageId()) <
@@ -344,7 +343,7 @@ bool BPLUSTREE_TYPE::Coalesce(N **neighbor_node, N **node,
       leaf_neighbor->SetNextPageId(leaf_node->GetNextPageId());
       (*parent)->Remove(index);
     }
-  } else {  ////////////////////////////////////////////////////////////////////
+  } else {
     InternalPage *internal_node = reinterpret_cast<InternalPage *>(*node);
     InternalPage *internal_neighbor = reinterpret_cast<InternalPage *>(*neighbor_node);
     if (index == 0 || (*parent)->ValueIndex((*node)->GetPageId()) <
@@ -358,8 +357,8 @@ bool BPLUSTREE_TYPE::Coalesce(N **neighbor_node, N **node,
     }
   }
 
-  /////////////////////////////////////
-  bool deletions = CoalesceOrRedistribute(*parent, transaction);  ///////////
+
+  bool deletions = CoalesceOrRedistribute(*parent, transaction);
   return deletions;
 }
 
