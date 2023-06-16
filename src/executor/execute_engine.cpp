@@ -1032,7 +1032,7 @@ dberr_t ExecuteEngine::ExecuteDelete(pSyntaxNode ast, ExecuteContext *context) {
   CatalogManager *catalogManager{nullptr};
   auto temp = this->dbs_.find(this->current_db_);
   if (temp == this->dbs_.end()) {
-    return r esult;
+    return result;
   }
   catalogManager = temp->second->catalog_mgr_;
   string table_name = table_info_node->val_;

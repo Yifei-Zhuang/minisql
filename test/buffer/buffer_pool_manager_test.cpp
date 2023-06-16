@@ -11,7 +11,7 @@ TEST(BufferPoolManagerTest, BinaryDataTest) {
 
   std::random_device r;
   std::default_random_engine rng(r());
-  std::uniform_int_distribution<char> uniform_dist(0);
+  std::uniform_int_distribution<int> uniform_dist(0);
 
   remove(db_name.c_str());
   auto *disk_manager = new DiskManager(db_name);
